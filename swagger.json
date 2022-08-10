@@ -1,0 +1,103 @@
+  {
+      "openapi": "3.0.0",
+      "info": {
+        "title": "API Valores Frete",
+        "description": "Esta API realiza validações para cálculo de frete",
+        "version": "1.0.0"
+      },
+      "servers": [
+        {
+          "url": "http://localhost:3000",
+          "description": "Local"
+        }
+      ],
+      "paths": {
+        "/": {
+          "get": {
+            "tags": [""],
+            "summary": "Checa se o servidor está respondendo corretamente",
+            "description": "Endpoint para validação da saúde da aplicação, pode ser usado por outros sistemas para validar se a API está funcionando corretamente e o tempo gasto para responder a uma requisição simples. Por meio desta métrica, é possível criar estratégias de healtcheck e auto-healing",
+            "operationId": "",
+            "responses": {
+              "200": {
+                "description": "Sucesso",
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string",
+                          "description": "Status do servidor - Valor esperado: \"running\""
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "500":{
+                "description": "Erro interno no servidor, se este erro persistir, o serviço deve estar indisponível, sendo necessária uma intervenção manual ou via software no servidor"
+              }
+            }
+          }
+        },
+
+
+        "/frete": {
+          "post": {
+            "tags": ["frete"],
+            "summary": "Requisição dos dados do pacote para validação do frete",
+            "description": "A API recebe informações de altura, largura e peso do pacote para validação e cáculo do frete. Se a altura e largura não estiver dentro do intervalo de máximo e mínimo esperado, será retornado um vetor vazio. Caso o dimensionamento esteja dentro de um tipo de frete, um json com as informações de nome, valor e quantos dias para a entrega será retornado. Caso o pacote se enquadre tanto no frete 'Entrega Ninja', quanto no 'Entrega Kabum' serão retnornadas as informações referente a cada um.",
+            "requestBody": {
+              "content": {
+                "application/json": {        
+                  "schema": {
+                  "type": "object",  
+
+                  "properties": {
+                    "peso": { 
+                      "type": "string"
+                    },
+
+                    "dimensao": { 
+                      "type": "object", 
+                      "properties": {
+                        "altura":{
+                          "type": "string"
+                        },
+                        "largura":{
+                          "type": "string"
+                        }
+                    }
+                  }
+                }
+              }
+            },
+
+            "responses": {
+              "200": {
+                "description": "Sucesso",
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string",
+                          "description": "Status da requisição"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "400":{
+                "description": "Pacote fora dos padrões para calculo do frete"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
